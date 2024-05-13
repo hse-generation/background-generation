@@ -30,7 +30,7 @@ def index(request):
             request.session['avatar'] = user[0]['profile_picture']
             return redirect('home')
 
-    data['title'] = 'Регистрация на сайте Readme'
+    data['title'] = 'Регистрация на сайте genme'
 
     form = RegistrationForm()
     data['form'] = form
