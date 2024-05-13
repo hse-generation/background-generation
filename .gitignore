@@ -4,4 +4,4 @@ venv/
 db.sqlite3
 Archive.zip
 /.sqllite3
-template/
+/template/
