@@ -1,0 +1,439 @@
+{% load static %}
+
+
+
+{% include 'home/blocks/header.html' %}
+
+{% include 'home/blocks/menu.html' %}
+
+{% include 'home/blocks/navbar.html' %}
+
+
+
+<!-- Content wrapper -->
+
+<div class="content-wrapper">
+
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+
+        <h4 class="py-3 mb-4" style="font-size: 2rem; margin-left: 10px;">Редактирование</h4>
+                <div class="row">
+                    <!-- Первый столбец -->
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img class="card-img-top" src="{{ good.image }}" alt="Fist image"
+                                 style="max-height: 400px; max-width: auto">
+                        </div>
+                    </div>
+
+                    <!-- Второй столбец -->
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img class="card-img-top" id="new-photo" src="{{ good.image }}" alt="Second image"
+                                 style="max-height: 400px; max-width: auto">
+                        </div>
+                    </div>
+
+                    <!-- Третий столбец -->
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- Ячейка "Отразить по горизонтали" -->
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <div class="card-title header-elements">
+                                            <h5 class="m-0 me-2">Отразить по горизонтали</h5>
+                                            <div class="card-title-elements ms-auto">
+                                                <label class="switch switch-primary switch-sm me-0">
+                                                    <input type="checkbox" class="switch-input reflect-horizontal">
+                                                    <span class="switch-toggle-slider">
+                                                        <span class="switch-on"></span>
+                                                        <span class="switch-off"></span>
+                                                    </span>
+                                                    <span class="switch-label"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <!-- Ячейка "Удалить фон" -->
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <div class="card-title header-elements">
+                                            <h5 class="m-0 me-2">Удалить фон</h5>
+                                            <div class="card-title-elements ms-auto">
+                                                <label class="switch switch-primary switch-sm me-0">
+                                                    <input type="checkbox" class="switch-input remove-background">
+                                                    <span class="switch-toggle-slider">
+                                                        <span class="switch-on"></span>
+                                                        <span class="switch-off"></span>
+                                                    </span>
+                                                    <span class="switch-label"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <!-- Форма для генерации нового фона -->
+                                        <div class="form-for-background-removal d-none">
+                                                <div class="input-group input-group-merge form-send-message">
+                                    <textarea class="form-control message-input"
+                                              placeholder="Введите запрос для генерации нового фона"
+                                              rows="2" id="textPrompt"></textarea>
+                                                    <span class="message-actions input-group-text">
+                                        <i class="bx bx-microphone cursor-pointer speech-to-text"></i>
+                                    </span>
+                                            </div>
+                                            <!-- Кнопка отправки запроса -->
+                                            <button id='gen-button' type="button" class="btn btn-outline-primary mt-3" onclick="generateImage()">
+                                                <i class="menu-icon tf-icons bx bx-window-open"></i> Сгенерировать
+                                            </button>
+                                            <!-- Лоадер -->
+                                            </br>
+                                            <div id="gen-loader" class="spinner-border spinner-border-sm text-primary" role="status" style="display: none;">
+
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <!-- Ячейка "Добавить текст на изображение" -->
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <div class="card-title header-elements">
+                                            <h5 class="m-0 me-2">Добавить текст на изображение</h5>
+                                            <div class="card-title-elements ms-auto">
+                                                <label class="switch switch-primary switch-sm me-0">
+                                                    <input type="checkbox" class="switch-input add-text">
+                                                    <span class="switch-toggle-slider">
+                                        <span class="switch-on"></span>
+                                        <span class="switch-off"></span>
+                                    </span>
+                                                    <span class="switch-label"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Форма выбора типа, расположения и размера шрифта текста -->
+                                        <div class="form-for-text-parameters d-none">
+                                            <div class="row gx-3 gy-2 align-items-center mt-3">
+                                                <div class="col-md-6">
+                                                    <select id="selectTypeOpt" class="form-select color-dropdown"
+                                                            title="Тип">
+                                                        <option value="arkhip.ttf" selected="">Arkhip</option>
+                                                        <option value="cms10.ttf">Cms10</option>
+                                                        <option value="DejaVuSerif.ttf">DejaVuSerif</option>
+                                                        <option value="STIXSizeTwoSym.ttf">STIXSizeTwoSym</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <select class="form-select placement-dropdown" id="selectPlacement"
+                                                            title="Расположение">
+                                                        <option value="50, 50">Сверху слева</option>
+                                                        <option value="50, 200">Сверху по
+                                                            центру
+                                                        </option>
+                                                        <option value="50, 400">Сверху справа</option>
+                                                        <option value="350, 350">По центру
+                                                            слева
+                                                        </option>
+<!--                                                        <option value="(350, 350)">По центру по-->
+<!--                                                            центру-->
+<!--                                                        </option>-->
+<!--                                                        <option value="(350, 350)">По центру справа-->
+<!--                                                        </option>-->
+<!--                                                        <option value="(350, 350)">Снизу слева</option>-->
+<!--                                                        <option value="(350, 350)">Снизу по-->
+<!--                                                            центру-->
+<!--                                                        </option>-->
+<!--                                                        <option value="(350, 350)">Снизу справа</option>-->
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <select class="form-select font-size-dropdown" id="selectFontSize"
+                                                            title="Размер шрифта">
+                                                        <option value="10">Маленький</option>
+                                                        <option value="50" selected="">Средний</option>
+                                                        <option value="100">Большой</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <select class="form-select font-size-dropdown" id="selectColor"
+                                                            title="Размер шрифта">
+                                                        <option value="black" selected="">Черный</option>
+                                                        <option value="white">Белый</option>
+                                                        <option value="red">Красный</option>
+                                                        <option value="blue">Синий</option>
+                                                        <option value="yellow">Желтый</option>
+                                                        <option value="pink">Розовый</option>
+                                                        <option value="grey">Серый</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Форма для ввода текста -->
+                                        <div class="form-for-text-addition d-none">
+                                            <br>
+                                            <div class="input-group input-group-merge form-send-message">
+                                <textarea class="form-control message-input" placeholder="Введите текст"
+                                          rows="2" id="textInput"></textarea>
+                                                <span class="message-actions input-group-text">
+                                    <i class="bx bx-microphone cursor-pointer speech-to-text"></i>
+                                </span>
+                                            </div>
+                                            <!-- Кнопка отправки текста -->
+                                            <button type="button" id="send-button" class="btn btn-outline-primary mt-3" onclick="addText()">
+                                                <i class="menu-icon tf-icons bx bx-window-open"></i> Отправить
+                                            </button>
+                                            <!-- Лоадер -->
+                                            </br>
+                                            <div id="text-loader" class="spinner-border spinner-border-sm text-primary" role="status" style="display: none;">
+
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <script>
+                                    function addText() {
+
+                                        // Скрыть кнопку и показать лоадер
+                                        document.getElementById('send-button').style.display = 'none';
+                                        document.getElementById('text-loader').style.display = 'inline-block';
+
+                                        const imageUrl = document.getElementById('new-photo').src;
+                                        const fontName = document.getElementById('selectTypeOpt').value;
+                                        const fontSize = parseInt(document.getElementById('selectFontSize').value);
+                                        const placement = document.getElementById('selectPlacement').value.split(",").map(Number); // Разбиваем строку на массив и преобразуем в числа
+                                        const text = document.getElementById('textInput').value;
+                                        const color = document.getElementById('selectColor').value;
+
+                                        fetch('./add_text/', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({
+                                                image_url: imageUrl,
+                                                font_name: fontName,
+                                                font_size: fontSize,
+                                                placement: placement,
+                                                text: text,
+                                                color: color
+                                            })
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.generated_image) {
+                                                // Обновляем исходное изображение на сгенерированное
+                                                document.getElementById('new-photo').src = data.generated_image;
+                                                document.getElementById('send-button').style.display = 'inline-block';
+                                                document.getElementById('text-loader').style.display = 'none';
+
+                                            } else {
+                                                console.log(data);
+                                            }
+                                        })
+                                        .catch(error => console.error('Ошибка:', error));
+
+
+                                    }
+                                </script>
+
+                                <script>
+                                    function generateImage() {
+
+                                        // Скрыть кнопку и показать лоадер
+                                        document.getElementById('gen-button').style.display = 'none';
+                                        document.getElementById('gen-loader').style.display = 'inline-block';
+
+                                        const imageUrl = document.getElementById('new-photo').src;
+                                        const prompt = document.getElementById('textPrompt').value;
+
+                                        fetch('./generate_image/', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({
+                                                image_url: imageUrl,
+                                                prompt: prompt
+                                            })
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.generated_image) {
+                                                // Обновляем исходное изображение на сгенерированное
+                                                document.getElementById('new-photo').src = data.generated_image;
+                                                document.getElementById('gen-button').style.display = 'inline-block';
+                                                document.getElementById('gen-loader').style.display = 'none';
+                                            } else {
+                                                console.log(data);
+                                            }
+                                        })
+                                        .catch(error => console.error('Ошибка:', data));
+                                    }
+                                </script>
+
+                                <script>
+                                    // Обработчик события для чекбокса "Удалить фон"
+                                    const backgroundRemovalCheckbox = document.querySelector('.remove-background');
+                                    const formForBackgroundRemoval = document.querySelector('.form-for-background-removal');
+
+                                    backgroundRemovalCheckbox.addEventListener('change', function() {
+                                        if (backgroundRemovalCheckbox.checked) {
+                                            formForBackgroundRemoval.classList.remove('d-none');
+                                        } else {
+                                            formForBackgroundRemoval.classList.add('d-none');
+                                        }
+                                    })
+
+                                    // Обработчик события для чекбокса "Добавить текст"
+                                    const addTextCheckbox = document.querySelector('.add-text');
+                                    const formForText = document.querySelector('.form-for-text-addition');
+                                    const formForTextParameters = document.querySelector('.form-for-text-parameters');
+
+                                    addTextCheckbox.addEventListener('change', function() {
+                                        if (addTextCheckbox.checked) {
+                                            formForTextParameters.classList.remove('d-none');
+                                            formForText.classList.remove('d-none');
+                                        } else {
+                                            formForTextParameters.classList.add('d-none');
+                                            formForText.classList.add('d-none');
+                                        }
+                                    });
+                                </script>
+
+
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function() {
+                                            const image = document.getElementById('new-photo');
+                                            const checkbox = document.querySelector('.reflect-horizontal');
+
+                                            checkbox.addEventListener('change', function() {
+                                                if (this.checked) {
+                                                    // Отправляем изображение на обработку
+                                                    const imageUrl = image.src;
+                                                    fetch('./flip_image/', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({image_url: imageUrl})
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data.generated_image) {
+                                                            // Обновляем изображение на отраженное
+                                                            image.src = data.generated_image;
+                                                        } else {
+                                                            console.log(data);
+                                                        }
+                                                    })
+                                                    .catch(error => console.error('Ошибка:', error));
+                                                } else {
+                                                    // Возвращение изображения в исходное положение
+                                                    // Отправляем изображение на обработку
+                                                    const imageUrl = image.src;
+                                                    fetch('./flip_image/', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({image_url: imageUrl})
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data.generated_image) {
+                                                            // Обновляем изображение на отраженное
+                                                            image.src = data.generated_image;
+                                                        } else {
+                                                            console.log(data);
+                                                        }
+                                                    })
+                                                    .catch(error => console.error('Ошибка:', error));
+                                                }
+                                            });
+                                        });
+                                    </script>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Кнопки отправки и скачивания -->
+                <div class="row mt-3">
+                    <div class="d-grid gap-2 col-12 mx-auto">
+                        <button class="btn btn-secondary btn-lg btn-block" type="button" onclick="downloadImage()">Скачать</button>
+                        <button class="btn btn-primary btn-lg btn-block" type="button" onclick="saveAndSend()">Сохранить результат и отправить
+                            на платформу
+                        </button>
+
+
+                    </div>
+                </div>
+
+                <script>
+                    function saveAndSend() {
+                        const imageUrl = document.getElementById('new-photo').src;
+                        const id = window.location.pathname.split('/').pop(); // Получаем последний сегмент URL
+
+                        fetch(`./save_image/${id}/`, { // Подставляем id в URL для метода save_image
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({image_url: imageUrl})
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.redirect_url) {
+                                setTimeout(function() {
+                                    window.location.href = data.redirect_url;
+                                }, 3000);
+                            } else {
+                                console.log(data);
+                            }
+                        })
+                        .catch(error => console.error('Ошибка:', error));
+                    }
+                    </script>
+
+                <script>
+                    function downloadImage() {
+                        // Получаем ссылку на изображение
+                        const imageUrl = document.getElementById('new-photo').src;
+
+                        // Создаем элемент <a> и устанавливаем атрибуты
+                        const link = document.createElement('a');
+                        link.href = imageUrl;
+                        link.setAttribute('download', 'image.jpg');
+
+                        // Добавляем элемент в документ и эмулируем клик
+                        document.body.appendChild(link);
+                        link.click();
+
+                        // Удаляем элемент из документа
+                        document.body.removeChild(link);
+                    }
+                </script>
+
+
+    </div>
+
+
+
+
+
+    {% include 'home/blocks/footer.html' %}
+

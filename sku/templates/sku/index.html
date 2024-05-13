@@ -1,0 +1,172 @@
+{% load static %}
+
+
+
+{% include 'home/blocks/header.html' %}
+
+{% include 'home/blocks/menu.html' %}
+
+{% include 'home/blocks/navbar.html' %}
+
+
+
+<!-- Content wrapper -->
+
+<div class="content-wrapper" xmlns="http://www.w3.org/1999/html">
+
+    <!-- Content -->
+
+
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+
+            <h4 class="py-3 mb-4" style="font-size: 2rem; margin-left: 10px;">Редактирование</h4>
+
+            <div class="container">
+                <div class="row">
+                    <!-- Первый столбец с изображениями -->
+                    <div class="col-md-auto mb-3" style="padding: 10;">
+                                        <!-- Изображения -->
+                    <div class="col-md" style="height: 100%">
+                        {% for image in good.images %}
+                        <!-- Изображение -->
+                        <div class="mb-2 pb-1" style="padding: 0 5px; height: calc(20% - 10px);">
+                            <img class="card-img" src="{{ image }}" alt="Preview image" style="width: 50px; height: 100%; object-fit: cover;">
+                        </div>
+                        {% if forloop.counter == 5 %}
+                        </div>
+                    </div>
+                    <!-- Проверяем, есть ли более 5 изображений -->
+                    {% if good.images|length > 5 %}
+                    <!-- Вторая колонка с изображениями -->
+                    <div class="col-md-auto mb-3" style="padding: 0 5px;">
+                        <!-- Изображения -->
+                        <div class="col-md" style="height: 100%;">
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                    <style>
+                        .selected {
+                            border: 2px solid #7e57c2;
+                        }
+                    </style>
+
+                    <!-- Столбец с карточкой товара -->
+                    <div class="col-md" style="max-width: calc(100% - 180px); padding: 0 1px;">
+                        <div class="card mb-3">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <img class="card-img card-img-left" src="{{ good.primary_image }}"
+                                         alt="Card image">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ good.name }}</h5>
+                                        <p class="card-text">
+                                            {{ good.description|safe }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Работы с текущим изображением -->
+                <div class="row mt-3" style="padding: 0 10px;">
+                    <div class="d-grid gap-2 col-12 mx-auto">
+                        <form method="post" action="{% url 'edit_image' good.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" id="image_src" name="image_src" value="{{ good.primary_image }}">
+                            <button style="width: 100%" class="btn btn-secondary btn-lg btn-block">Редактировать текущее изображение</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Форма загрузки файла -->
+                <div class="row mt-3" style="padding: 0 10px;">
+                    <div class="col-12">
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="image-input"  accept="image/*">
+                            <label class="input-group-text" >Загрузить</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Кнопки работы с изображением с платформы -->
+                <div class="row mt-3" style="padding: 0 10px;">
+                    <div class="d-grid gap-2 col-12 mx-auto">
+                        <button class="btn btn-primary btn-lg btn-block" onclick="uploadImage()" type="button">
+                            Добавить новое изображение
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function uploadImage() {
+                    const fileInput = document.getElementById('image-input');
+                    const file = fileInput.files[0];
+
+                    if (file) {
+                        const formData = new FormData();
+                        formData.append('image_content', file);
+
+                        fetch(window.location.pathname, { // Используем текущий URL в качестве адреса для POST-запроса
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.redirect_url) {
+                                window.location.href = data.redirect_url;
+                            } else {
+                                console.log(data);
+                            }
+                        })
+                        .catch(error => console.error('Ошибка:', error));
+                    } else {
+                        console.log('Файл не выбран');
+                    }
+                }
+                </script>
+
+                <script>
+                    // Получаем все фотографии
+                    const images = document.querySelectorAll('.card-img');
+
+                    // Добавляем обработчик событий для каждой фотографии
+                    images.forEach(image => {
+                        image.addEventListener('click', function() {
+                            // Убираем рамку со всех фотографий
+                            images.forEach(img => img.classList.remove('selected'));
+
+                            // Добавляем рамку только к выбранной фотографии
+                            this.classList.add('selected');
+
+                            // Получаем ссылку на изображение и его описание
+                            const imageUrl = this.getAttribute('src');
+                            const imageAlt = this.getAttribute('alt');
+
+                            // Обновляем изображение и описание в карточке товара
+                            const cardImage = document.querySelector('.card-img-left');
+                            const cardDescription = document.querySelector('.card-title + .card-body p');
+
+                            document.getElementById('image_src').value = imageUrl;
+                            cardImage.setAttribute('src', imageUrl);
+                            cardImage.setAttribute('alt', imageAlt);
+                            cardDescription.textContent = imageAlt;
+                        });
+                    });
+                </script>
+    </div>
+
+
+
+
+
+    {% include 'home/blocks/footer.html' %}
+

@@ -1,0 +1,83 @@
+{% load static %}
+
+
+
+{% include 'home/blocks/header.html' %}
+
+{% include 'home/blocks/menu.html' %}
+
+{% include 'home/blocks/navbar.html' %}
+
+<!-- Content wrapper -->
+
+<div class="content-wrapper">
+    {% if 'user_id' in request.session %}
+        <div class="container-xxl flex-grow-1 container-p-y">
+<!--        <h4 class="fw-bold py-3 mb-4">Для Вас</h4>-->
+        <form method="post">
+            <div class="row">
+                    {% csrf_token %}
+                        {% for good in goods %}
+                        <div class="col-md-4 col-lg-3 mt-4">
+
+                            <div class="card h-200">
+                                <div class="card-body">
+
+                                    <img class="card-img-top" src="{{ good.primary_image }}" style="max-height: 200px; object-fit: cover;" alt="Card image cap">
+                                    <br>
+                                    <h5 class="card-title" style="font-size: 1rem;">
+                                        <br>
+                                        {{ good.name }}
+                                    </h5>
+
+<!--                                    <p class="card-text">-->
+
+<!--                                        {% if book.authors|length > 1 %}-->
+<!--                                            {% if book.authors.0.1|length > 15 %}-->
+<!--                                                {{ book.authors.0.1|slice:":15" }}...-->
+<!--                                            {% else %}-->
+<!--                                                {{ book.authors.0.1 }}-->
+<!--                                            {% endif %}-->
+<!--                                            и др.-->
+<!--                                        {% else %}-->
+<!--                                            {% if book.authors.0.1|length > 15 %}-->
+<!--                                                {{ book.authors.0.1|slice:":15" }}...-->
+<!--                                            {% else %}-->
+<!--                                                {{ book.authors.0.1 }}-->
+<!--                                            {% endif %}-->
+<!--                                        {% endif %}-->
+<!--                        -->
+<!--                                    </p>-->
+                                    <div style="display: flex; align-items: center;">
+
+                                        <figure class="text-start mt-2"
+
+                                                style="display: flex; align-items: center; flex-grow: 1;">
+
+                                            <span class="star-icon"
+
+                                                  style="vertical-align: middle; color: royalblue; font-size: 16px; margin-left: 5px;">&#9733;</span>
+
+                                            <span style="margin-left: 5px; color: royalblue;">{{ good.rating }}</span>
+
+
+                                        </figure>
+                                    </div>
+                                    <a href="{% url 'sku' good.id %}" class="btn btn-outline-primary btn-sm">Редактировать</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+            </div>
+        </form>
+    </div>
+
+    {% endif %}
+
+
+
+
+
+    {% include 'home/blocks/footer.html' %}
+

@@ -1,0 +1,168 @@
+{% load static %}
+
+{% include 'home/blocks/header.html' %}
+
+{% include 'home/blocks/menu.html' %}
+
+{% include 'home/blocks/navbar.html' %}
+
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Настройки аккаунта / </span>Аккаунт
+        </h4>
+
+        <div class="row">
+            <div class="col-md-12">
+                <form id="formAccountSettings" method="POST" enctype="multipart/form-data">
+                <div class="card mb-4">
+                    <h5 class="card-header">Детали Профиля</h5>
+                    <div class="card-body">
+                        <div class="d-flex align-items-start align-items-sm-center gap-4">
+                            <img
+                                    src="{% static './home/img/' %}{{ profile_picture }}"
+                                    alt="user-avatar"
+                                    class="d-block rounded"
+                                    height="100"
+                                    width="auto"
+                                    id="uploadedAvatar"
+                            />
+
+                            <div class="mb-3 row">
+                                {{ form.profile_picture }}
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-0"/>
+                    <div class="card-body">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="mb-3 col-md-6">
+                                    <label for="firstName" class="form-label">Имя</label>
+                                    {{ form.name }}
+                                </div>
+
+                                <div class="mb-3 col-md-4">
+                                    <label for="client_id" class="form-label">Ozon</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Client ID</span>
+                                       {{ form.client_id }}
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 col-md-6">
+                                    <label for="email" class="form-label">E-mail</label>
+                                    {{ form.email }}
+                                </div>
+
+
+                                <div class="mb-3 col-md-4">
+                                    <label for="api-key" class="form-label"></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">API key</span>
+                                       {{ form.api_key }}
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="mt-2">
+                                <button name="save_account_info" class="btn btn-primary me-2">Сохранить изменения
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /Account -->
+                </div>
+                <style>
+                    .btn-group {
+                        margin: 3px 3px 2px; /* Пример вертикального отступа 10 пикселей, можно изменить по вашему выбору */
+                    }
+                </style>
+                <div class="col-md mb-4 mb-md-0">
+
+                    <div class="card">
+                    <h5 class="card-header">Удалить акккаунт</h5>
+                    <div class="card-body">
+                        <div class="mb-3 col-12 mb-0">
+                            <div class="alert alert-warning">
+                                <h6 class="alert-heading fw-bold mb-1">Вы уверены, что хотите удалить свою
+                                    учетную запись?
+                                </h6>
+                                <p class="mb-0">Как только вы удалите свою учетную запись, обратного
+                                    возвращения не будет. Пожалуйста, будьте уверены.</p>
+                            </div>
+                        </div>
+                        <form id="formAccountDeactivation" method="post">
+                            {% csrf_token %}
+                            <button type="button"  class="btn btn-danger"  data-bs-toggle="modal" data-bs-target="#modalToggle">
+                                Удалить Аккаунт
+                            </button>
+                            <div class="modal fade"  id="modalToggle"  aria-labelledby="modalToggleLabel"  tabindex="-1"  style="display: none" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="modalToggleLabel">ПРЕДУПРЕЖДАЕМ!!!</h5>
+                                <button
+                                  type="button"
+                                  class="btn-close"
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close"
+                                ></button>
+                              </div>
+                              <div class="modal-body">Ваш аккаунт удалится навсегда :(</div>
+                              <div class="modal-footer">
+                                <button name="deactivate-account"
+                                  class="btn btn-danger"
+                                  data-bs-target="#modalToggle2"
+                                  data-bs-toggle="modal"
+                                  data-bs-dismiss="modal"
+                                >
+                                  Удалить
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- / Content -->
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <script type="application/javascript">
+        // Add event listeners to the checkbox elements
+        $('.btn-check').on('click', function() {
+          const genreId = $(this).val();
+          const isActive = $(this).is(':checked');
+
+          // Send AJAX request to the controller
+          $.ajax({
+            url: '{% url 'account' %}',
+            type: 'POST',
+            data: {
+              csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+              genre_id: genreId,
+              action: isActive ? 'add' : 'remove'
+            },
+            success: function() {
+              // Handle success if needed
+            },
+            error: function(xhr, status, error) {
+              // Handle error if needed
+            }
+          });
+        });
+
+
+    </script>
+
+    {% include 'home/blocks/footer.html' %}
